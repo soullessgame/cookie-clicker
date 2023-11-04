@@ -16,6 +16,7 @@ start_time = time.time()
 cookie = driver.find_element(By.CSS_SELECTOR,'#cookie')
 counter =driver.find_element(By.CSS_SELECTOR,'#money')
 panel = driver.find_elements(By.CSS_SELECTOR,'#store b')
+cookies_second = driver.find_element(By.CSS_SELECTOR,'#cps')
 
 #get all upgrade items in a dictionary
 for items in panel:
@@ -33,6 +34,8 @@ for n in range(len(panel)-1):
 
 print(clickable_options)
 
+game_started = time.time()
+
 game_is_on = True
 while game_is_on:
     cookie.click()
@@ -43,8 +46,8 @@ while game_is_on:
         print(f'current amount of cookies: {counter.text}')
 
         # get highest cliclable value, lower than the counter
-        evaluated_counter = int(counter.text)
-        filtered_items = list(filter(lambda x: x[1]['Upgrade cost'] < evaluated_counter, clickable_options.items()))
+        evaluated_counter = counter.text.replace(',', '',)
+        filtered_items = list(filter(lambda x: x[1]['Upgrade cost'] < int(evaluated_counter), clickable_options.items()))
         print(filtered_items)
         highest_item = max(filtered_items)
 
@@ -56,3 +59,8 @@ while game_is_on:
 
         #reset 5 second timer
         start_time= current_time
+
+    if current_time - game_started >= 300:
+        game_is_on = False
+
+print(f'cookies/second:{cookies_second.text}')
